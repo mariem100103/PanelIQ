@@ -3,23 +3,31 @@ import whisper
 import subprocess
 from groq import Groq
 
-
 from pathlib import Path
-env = Path('C:/Users/user/Desktop/quizlive/.env').read_text()
-for line in env.splitlines():
-    if '=' in line:
-        k, v = line.split('=', 1)
-        os.environ[k.strip()] = v.strip()
+ROOT = Path(__file__).resolve().parent.parent
+ENV_FILE = ROOT / ".env"
+if ENV_FILE.exists():
+    for line in ENV_FILE.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            os.environ.setdefault(k.strip(), v.strip())
 
-client = Groq(api_key=os.environ['GROQ_API_KEY'])
+groq_key = os.environ.get("GROQ_API_KEY")
+if not groq_key:
+    raise RuntimeError("GROQ_API_KEY not set")
 
+client = Groq(api_key=groq_key)
+
+VIDEO_FILE = ROOT / "videos" / "fsf_ep36.mp4"
+AUDIO_FILE = ROOT / "videos" / "agent_audio.wav"
 
 subprocess.run([
     'ffmpeg', '-i',
-    'C:/Users/user/Desktop/quizlive/videos/fsf_ep36.mp4',
+    str(VIDEO_FILE),
     '-ss', '00:00:30', '-t', '60',
     '-vn', '-ar', '16000', '-ac', '1',
-    'C:/Users/user/Desktop/quizlive/videos/agent_audio.wav',
+    str(AUDIO_FILE),
     '-y'
 ], capture_output=True)
 
@@ -27,7 +35,7 @@ subprocess.run([
 print("Transcription...")
 model = whisper.load_model("medium")
 result = model.transcribe(
-    'C:/Users/user/Desktop/quizlive/videos/agent_audio.wav',
+    str(AUDIO_FILE),
     language='ar'
 )
 transcript = result['text']
