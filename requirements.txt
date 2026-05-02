@@ -1,0 +1,13 @@
+lap
+fastapi
+uvicorn
+python-dotenv
+tzdata
+jinja2
+opencv-python
+numpy
+ultralytics
+scikit-image
+requests
+pyyaml
+pydantic

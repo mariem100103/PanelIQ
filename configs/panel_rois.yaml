@@ -1,0 +1,27 @@
+panels:
+  panel_001:
+    panel_id: panel_001
+    zone_type: urban-commercial
+    lat: 36.8065
+    lng: 10.1815
+    video_file: video1.mp4
+    reference_file: ref1.jpg
+    roi: { x1: 100, y1: 100, x2: 500, y2: 400 }
+
+  panel_002:
+    panel_id: panel_002
+    zone_type: residential
+    lat: 36.8528
+    lng: 10.2144
+    video_file: video2.mp4
+    reference_file: ref2.jpg
+    roi: { x1: 80, y1: 120, x2: 480, y2: 380 }
+
+  panel_003:
+    panel_id: panel_003
+    zone_type: university
+    lat: 36.8188
+    lng: 10.1664
+    video_file: video3.mp4
+    reference_file: ref3.jpg
+    roi: { x1: 90, y1: 110, x2: 510, y2: 410 }

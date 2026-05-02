@@ -1,0 +1,5 @@
+# Alert when SSIM drops below this (live ROI vs reference). Lower if ref image is not a pixel-perfect ROI crop.
+ssim_threshold: 0.2
+tamper_blur_threshold: 20
+tamper_brightness_min: 10
+tamper_brightness_max: 245

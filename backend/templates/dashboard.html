@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>PanelIQ · Intelligence publicitaire pour la Tunisie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+:root {
+  --bg: #F4F6F9;
+  --surface: #FFFFFF;
+  --text-primary: #1A1D23;
+  --text-secondary: #6B7280;
+  --accent: #00C896;
+  --accent-light: #E6FAF5;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --border: #E5E7EB;
+  --purple: #7C3AED;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(26, 29, 35, 0.06);
+  --shadow-md: 0 8px 24px rgba(26, 29, 35, 0.08);
+  --font: "Inter", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "Cascadia Code", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+a { color: var(--accent); text-decoration: none; font-weight: 500; }
+a:hover { text-decoration: underline; }
+
+.skip {
+  position: absolute; left: -100vw; top: 0; padding: .5rem 1rem; background: var(--accent); color: #fff; z-index: 999;
+}
+.skip:focus { left: .75rem; top: .75rem; }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 1.25rem 3rem; }
+
+/* Nav */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255,255,255,.92); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.topbar__inner {
+  max-width: 1180px; margin: 0 auto; padding: .65rem 1.25rem;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.brand { display: flex; flex-direction: column; gap: .1rem; }
+.brand__name { font-weight: 800; font-size: 1.2rem; letter-spacing: -.02em; }
+.brand__tag { font-size: .8rem; color: var(--text-secondary); max-width: 22rem; }
+
+.tabs { display: flex; gap: .25rem; flex-wrap: wrap; }
+.tabs a {
+  padding: .45rem .85rem; font-size: .8125rem; font-weight: 600; color: var(--text-secondary);
+  border-radius: 6px 6px 0 0; border-bottom: 2px solid transparent;
+}
+.tabs a:hover { color: var(--text-primary); background: var(--bg); text-decoration: none; }
+.tabs a.is-active {
+  color: var(--accent); border-bottom-color: var(--accent); background: transparent;
+}
+
+/* Hero */
+.hero { padding: 1.75rem 0 1.5rem; }
+.hero__row {
+  display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.status-pill {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .35rem .75rem; border-radius: 999px; font-size: .75rem; font-weight: 700;
+  border: 1px solid var(--border); background: var(--surface);
+}
+.status-pill--on {
+  border-color: #a7f3d0; background: var(--accent-light); color: #047857;
+  animation: pulse-soft 2.2s ease-in-out infinite;
+}
+.status-pill--off { color: var(--danger); border-color: #fecaca; background: #fef2f2; }
+@keyframes pulse-soft {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 200, 150, 0.25); }
+  50% { box-shadow: 0 0 0 6px rgba(0, 200, 150, 0); }
+}
+
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.kpi {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.1rem 1.2rem; box-shadow: var(--shadow);
+}
+.kpi__label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-secondary); }
+.kpi__value { font-size: 1.75rem; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: .2rem; }
+.kpi__hint { font-size: .75rem; color: var(--text-secondary); margin-top: .35rem; }
+
+/* Sections */
+.section { margin-top: 2rem; }
+.section__eyebrow {
+  font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); margin: 0 0 .35rem;
+}
+.section__title { font-size: 1.15rem; font-weight: 800; margin: 0 0 .35rem; }
+.section__sub { font-size: .875rem; color: var(--text-secondary); margin: 0 0 1rem; max-width: 52rem; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.25rem 1.35rem; box-shadow: var(--shadow);
+}
+
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; }
+
+/* Score block */
+.score-hero {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1rem; margin-bottom: 1rem;
+}
+.score-hero__num { font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 800; line-height: 1; color: var(--text-primary); }
+.score-hero__lbl { font-size: .875rem; color: var(--text-secondary); max-width: 14rem; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: 1rem; }
+select.select {
+  font: inherit; padding: .45rem .75rem; border-radius: 8px; border: 1px solid var(--border); background: #fff; min-width: 10rem;
+}
+.btn {
+  font: inherit; font-weight: 600; cursor: pointer; border: none; border-radius: 8px;
+  padding: .55rem 1rem; background: var(--accent); color: #fff;
+}
+.btn:hover { filter: brightness(1.05); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn--ghost { background: #fff; color: var(--text-primary); border: 1px solid var(--border); }
+
+.badge {
+  display: inline-flex; align-items: center; gap: .25rem; padding: .25rem .55rem; border-radius: 999px;
+  font-size: .75rem; font-weight: 700; background: var(--accent-light); color: #047857; border: 1px solid #a7f3d0;
+}
+
+.ses-track {
+  margin: 1rem 0; padding: .75rem 0;
+}
+.ses-track__head {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: .35rem; font-size: .8125rem; font-weight: 600;
+}
+.ses-track__bar {
+  height: 10px; border-radius: 99px; background: #E5E7EB; position: relative; overflow: hidden;
+}
+.ses-track__fill {
+  height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), #34d399);
+  transition: width .4s ease;
+}
+.ses-ticks {
+  display: flex; justify-content: space-between; font-size: .65rem; color: var(--text-secondary); margin-top: .25rem;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+.chip {
+  padding: .35rem .65rem; border-radius: 8px; background: var(--bg); border: 1px solid var(--border);
+  font-size: .75rem; font-weight: 600; color: var(--text-primary);
+}
+
+/* Mini bars */
+.bars { display: flex; flex-direction: column; gap: .5rem; margin-top: .5rem; }
+.bar-row { display: grid; grid-template-columns: 110px 1fr 2.5rem; align-items: center; gap: .5rem; font-size: .8125rem; }
+.bar-row__name { color: var(--text-secondary); font-weight: 600; text-transform: capitalize; }
+.bar-track { height: 8px; background: #E5E7EB; border-radius: 99px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #00C896, #5eead4); }
+.bar-count { text-align: right; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+/* Privacy flow — pure CSS */
+.flow-wrap { margin-top: 1rem; overflow-x: auto; }
+.flow {
+  display: flex; align-items: stretch; gap: 0; min-width: min(100%, 520px);
+}
+.flow-box {
+  flex: 1; min-width: 0; padding: .65rem .5rem; text-align: center; font-size: .72rem; font-weight: 700;
+  background: var(--accent-light); border: 1px solid #a7f3d0; border-radius: 8px; color: #065f46;
+}
+.flow-arrow {
+  display: flex; align-items: center; justify-content: center; width: 1.25rem; flex-shrink: 0;
+  font-size: .9rem; color: var(--accent); font-weight: 800;
+}
+
+.privacy-badge {
+  display: inline-block; margin-top: .75rem; padding: .35rem .65rem; border-radius: 8px;
+  background: #ecfdf5; color: #047857; font-size: .72rem; font-weight: 700; border: 1px solid #a7f3d0;
+}
+.privacy-stat {
+  margin-top: 1rem; padding: .75rem; border-radius: 8px; background: var(--bg); font-size: .8125rem; color: var(--text-secondary);
+}
+
+/* Attention SVG block */
+.att-visual { margin-top: .75rem; background: var(--bg); border-radius: var(--radius); padding: .75rem; border: 1px dashed var(--border); }
+.att-visual svg { width: 100%; max-width: 320px; height: auto; display: block; margin: 0 auto; }
+
+.metrics-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1rem; }
+.metric-big {
+  text-align: center; padding: .85rem; border-radius: 8px; border: 1px solid var(--border); background: #fafafa;
+}
+.metric-big__v { font-size: 1.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.metric-big__l { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-secondary); }
+
+.method-badge {
+  display: inline-block; margin-top: .75rem; font-size: .65rem; font-weight: 700; padding: .3rem .55rem; border-radius: 6px;
+  background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
+}
+
+/* YOLO tiles */
+.tile-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: .65rem; margin: 1rem 0; }
+@media (max-width: 720px) { .tile-row { grid-template-columns: repeat(2, 1fr); } }
+.tile {
+  text-align: center; padding: .65rem .5rem; border-radius: 8px; border: 1px solid var(--border); background: #fafafa;
+}
+.tile__v { font-weight: 800; font-size: 1rem; }
+.tile__l { font-size: .62rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-secondary); font-weight: 600; }
+
+.banner-ok {
+  padding: .85rem 1rem; border-radius: 8px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857;
+  font-weight: 700; margin-bottom: 1rem;
+}
+
+.track-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: .65rem; margin-top: .75rem; }
+@media (max-width: 900px) { .track-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .track-cards { grid-template-columns: 1fr; } }
+.tcard {
+  border: 1px solid var(--border); border-radius: 10px; padding: .75rem; background: #fafafa;
+}
+.tcard__id { font-size: 1.25rem; font-weight: 800; color: var(--accent); }
+.tcard__cls { font-size: .8125rem; font-weight: 600; margin-top: .25rem; }
+.conf-pill { display: inline-block; margin-top: .35rem; padding: .15rem .4rem; border-radius: 6px; font-size: .7rem; font-weight: 700; }
+.conf-pill--hi { background: #d1fae5; color: #047857; }
+.conf-pill--mid { background: #fef3c7; color: #b45309; }
+.conf-pill--lo { background: #fee2e2; color: #b91c1c; }
+.tcard__bbox { font-size: .65rem; color: var(--text-secondary); font-family: var(--mono); margin-top: .35rem; word-break: break-all; }
+.face-badge {
+  display: inline-block; margin-top: .35rem; font-size: .62rem; font-weight: 700; padding: .15rem .4rem; border-radius: 6px;
+  background: #ede9fe; color: var(--purple); border: 1px solid #ddd6fe;
+}
+
+/* Ingest cards */
+.ingest-list { display: flex; flex-direction: column; gap: .65rem; }
+.ingest-card {
+  border: 1px solid var(--border); border-radius: 10px; padding: .85rem 1rem; background: var(--surface);
+  display: grid; gap: .5rem;
+}
+.ingest-card__time { font-weight: 700; font-size: .875rem; }
+.ingest-card__mini .bar-track { height: 5px; }
+
+.alert-card {
+  display: flex; gap: .75rem; align-items: flex-start; border: 1px solid #fecaca; background: #fef2f2;
+  border-radius: 10px; padding: .85rem 1rem;
+}
+.alert-card__icon { font-size: 1.25rem; flex-shrink: 0; }
+.ssim-num { font-weight: 800; font-variant-numeric: tabular-nums; }
+.ssim--bad { color: var(--danger); }
+.ssim--mid { color: var(--warning); }
+.ssim--ok { color: #059669; }
+
+.pill-ok {
+  display: inline-flex; align-items: center; gap: .35rem; padding: .4rem .75rem; border-radius: 999px;
+  background: #ecfdf5; color: #047857; font-weight: 700; font-size: .8125rem; border: 1px solid #a7f3d0;
+}
+
+.footer {
+  margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+  font-size: .75rem; color: var(--text-secondary); text-align: center;
+}
+
+.empty { padding: 1rem; border-radius: 8px; background: var(--bg); color: var(--text-secondary); font-size: .875rem; border: 1px dashed var(--border); }
+.mono { font-family: var(--mono); font-size: .75rem; }
+.meta-line { font-size: .75rem; color: var(--text-secondary); margin-top: .5rem; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="brand">
+        <span class="brand__name">PanelIQ</span>
+        <span class="brand__tag">Sachez exactement qui a vu votre pub — et s'il y faisait attention</span>
+      </div>
+      <nav class="tabs" aria-label="Navigation principale">
+        <a class="is-active" href="/">Tableau de bord</a>
+        <a href="/docs">Explorateur API</a>
+        <a href="/data">Export</a>
+        <a id="tab-score" href="/panels/{{ default_panel_id|e }}/score">Diagnostic du score</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <main id="main">
+      <section class="hero">
+        <div class="hero__row">
+          <div>
+            <p class="section__eyebrow" style="margin:0 0 .25rem;">Première plateforme publicitaire extérieure de Tunisie</p>
+            <h1 class="section__title" style="font-size:1.35rem;">PanelIQ</h1>
+            <p class="section__sub" style="margin-bottom:0;">
+              La première plateforme publicitaire extérieure de Tunisie qui remplace les suppositions par de vraies données d'audience — mises à jour toutes les 5 minutes, disponibles sur n'importe quel panneau, avant de dépenser un seul dinar.
+            </p>
+          </div>
+          <div id="edge-status" class="status-pill status-pill--off" role="status">Edge hors ligne</div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi__label">NOMBRE RÉEL D'AUDIENCE</div>
+            <div class="kpi__value" id="kpi-panels">—</div>
+            <div class="kpi__hint">Score de portée en direct mis à jour toutes les 5 minutes</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__label">PROFIL D'AUDIENCE</div>
+            <div class="kpi__value" id="kpi-impressions">—</div>
+            <div class="kpi__hint">Types de véhicules, niveaux de revenus, heures de pointe</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__label">QUALITÉ D'ATTENTION</div>
+            <div class="kpi__value" id="kpi-alerts">—</div>
+            <div class="kpi__hint">A regardé vs juste passé</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi__label">SANTÉ DU PANNEAU</div>
+            <div class="kpi__value" id="kpi-health">—</div>
+            <div class="kpi__hint">Votre pub est-elle affichée ?</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 1 -->
+      <section class="section card" id="score-section" aria-labelledby="s1-title">
+        <p class="section__eyebrow">Ce que vous voyez sur votre tableau de bord</p>
+        <h2 id="s1-title" class="section__title">Carte d'ensemble des panneaux</h2>
+        <p class="section__sub">
+          Tous vos panneaux sur une carte avec un indicateur de statut en direct — vert signifie que votre pub est visible et fonctionnelle, orange signifie qu'une attention est nécessaire.
+        </p>
+        <div class="toolbar">
+          <label for="panel-select" class="mono" style="font-size:.75rem;color:var(--text-secondary);">Panneau</label>
+          <select id="panel-select" class="select" aria-label="Sélectionner un panneau"></select>
+          <button type="button" class="btn" id="btn-refresh-score">Actualiser le score</button>
+        </div>
+        <div class="score-hero">
+          <div class="score-hero__num" id="score-impressions">—</div>
+          <div class="score-hero__lbl">impressions de marque / fenêtre<br /><span class="mono" id="score-window" style="font-size:.75rem;color:var(--text-secondary);"></span></div>
+        </div>
+        <div class="ses-track">
+          <div class="ses-track__head">
+            <span>Indice de qualité d'audience (0-10) <span title="Score démographique base sur la localisation et le profil d'audience" style="cursor:help;border-bottom:1px dotted var(--text-secondary);">ⓘ</span></span>
+            <span class="mono" id="score-ses-val">—</span>
+          </div>
+          <div class="ses-track__bar" role="img" aria-label="Échelle SES de 0 à 10">
+            <div class="ses-track__fill" id="score-ses-fill" style="width:0%;"></div>
+          </div>
+          <div class="ses-ticks"><span>0</span><span>5</span><span>10</span></div>
+        </div>
+        <div class="badge-row" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.35rem;align-items:center;">
+          <span id="score-context-badge" class="badge" style="display:none;"></span>
+          <span id="score-weather-badge" class="badge" style="display:none;background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8;"></span>
+        </div>
+        <p id="score-baseline-hint" class="meta-line" style="display:none;color:#9ca3af;font-size:.75rem;margin-top:.35rem;"></p>
+        <div class="chips" id="audience-chips"></div>
+        <p class="meta-line" id="score-empty" style="display:none;">Aucun score pour ce panneau — lancez l'appareil edge ou envoyez une charge utile à <span class="mono">/ingest/vehicle-mix</span>.</p>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="section card" id="mix-section">
+        <p class="section__eyebrow">Ce que vous voyez sur votre tableau de bord</p>
+        <h2 class="section__title">Analyse de portée et d'attention</h2>
+        <p class="section__sub">Pour chaque panneau : nombre total de passants, combien ont regardé vers la pub, et comment cela se répartit entre matin, après-midi et soir.</p>
+        <div id="mix-content"></div>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="section">
+        <p class="section__eyebrow">Ce que vous voyez sur votre tableau de bord</p>
+        <h2 class="section__title">Informations sur l'audience</h2>
+        <p class="section__sub">Une répartition de qui passe — catégories de véhicules (motos, berlines, camions), tranche de revenu du quartier, et quelles heures génèrent le plus d'exposition.</p>
+        <div class="grid-2">
+          <article class="card">
+            <h3 class="section__title" style="font-size:1rem;">Évaluation de l'attention</h3>
+            <p class="section__sub" style="font-size:.8125rem;margin-bottom:.75rem;">
+              Estime si les occupants des véhicules passants sont orientés vers le panneau — améliorant la qualité des impressions.
+            </p>
+            <p class="section__sub" style="font-size:.8125rem;margin-bottom:.5rem;">
+              L'inclinaison de la tête est estimée à partir de la géométrie des points de repère faciaux, ou à partir du rapport d'aspect de la boîte englobante lorsque les points de repère ne sont pas disponibles. Une personne compte comme une &quot;impression attentive&quot; uniquement si le cône de regard estimé intersecte la direction du panneau.
+            </p>
+            <div class="att-visual">
+              <svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg" aria-label="Schema du cone d'attention">
+                <rect x="0" y="0" width="320" height="140" fill="#f4f6f9" rx="8"/>
+                <text x="16" y="24" fill="#6b7280" font-size="11" font-family="Inter,sans-serif">Vue du dessus · route</text>
+                <rect x="20" y="50" width="280" height="36" fill="#e5e7eb" rx="4"/>
+                <line x1="20" y1="68" x2="300" y2="68" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6 6"/>
+                <rect x="8" y="44" width="14" height="48" fill="#00C896" rx="2"/>
+                <text x="6" y="40" fill="#047857" font-size="10" font-weight="700">Panneau</text>
+                <g transform="translate(210,68)">
+                  <path d="M 0 0 L -42 -38 L 42 -38 Z" fill="rgba(0,200,150,0.2)" stroke="#00C896" stroke-width="1.5"/>
+                  <text x="0" y="-44" text-anchor="middle" fill="#047857" font-size="9" font-weight="700">±30° attention</text>
+                </g>
+                <rect x="232" y="56" width="36" height="22" fill="#1a1d23" rx="4"/>
+                <text x="250" y="71" text-anchor="middle" fill="#fff" font-size="8">Voiture</text>
+              </svg>
+            </div>
+            <div class="metrics-2">
+              <div class="metric-big">
+                <div class="metric-big__v" id="att-imp">—</div>
+                <div class="metric-big__l">Impressions attentives</div>
+              </div>
+              <div class="metric-big">
+                <div class="metric-big__v" id="att-rate">—</div>
+                <div class="metric-big__l">Taux d'attention %</div>
+              </div>
+            </div>
+            <p class="section__sub" style="font-size:.75rem;margin-top:.75rem;margin-bottom:0;">
+              L'évaluation de l'attention s'exécute dans le cadre du Travail A sur chaque détection de personne suivie. Elle ne nécessite pas de stocker ou de transmettre des données d'image.
+            </p>
+            <span class="method-badge">Méthode : proxy de rapport d'aspect de boîte englobante + seuil d'angle configurable</span>
+          </article>
+        </div>
+      </section>
+
+      <!-- Section 4 -->
+      <section class="section card" id="yolo-section">
+        <p class="section__eyebrow">Section 4</p>
+        <h2 class="section__title">Validation du modèle edge</h2>
+        <p class="section__sub">Vérifiez que le modèle YOLOv8n sur l'appareil détecte correctement les véhicules sur votre vidéo d'exemple.</p>
+        <p class="meta-line" id="video-path-line">Chemin vidéo : <span class="mono" id="video-path-text">{{ video_hint|e }}</span></p>
+        <button type="button" class="btn" id="btn-verify" style="margin-top:.75rem;">Exécuter le modèle sur la vidéo d'exemple</button>
+        <div id="verify-out" style="margin-top:1rem;"></div>
+      </section>
+
+      <!-- Section 5 -->
+      <section class="section card" id="ingest-section">
+        <p class="section__eyebrow">Section 5</p>
+        <h2 class="section__title">Historique d'ingestion</h2>
+        <p class="section__sub">Chaque ligne représente une fenêtre de 5 minutes de comptages de véhicules envoyés par l'appareil edge.</p>
+        <div id="ingest-list" class="ingest-list"></div>
+        <button type="button" class="btn btn--ghost" id="btn-load-more" style="margin-top:.75rem;display:none;">Charger plus</button>
+      </section>
+
+      <!-- Section 6 -->
+      <section class="section card" id="integrity-section">
+        <p class="section__eyebrow">Section 6</p>
+        <h2 class="section__title">Moniteur d'intégrité du panneau</h2>
+        <p class="section__sub">
+          Le Travail B sur l'edge vérifie le panneau toutes les 5 minutes en utilisant la comparaison d'images SSIM. Les alertes se déclenchent lorsque le panneau semble endommagé, couvert, ou que la caméra a été trafiquée.
+        </p>
+        <div id="alerts-out"></div>
+      </section>
+
+      <footer class="footer">
+        PanelIQ · Conçu pour le marché DOOH tunisien · Appareil edge : Raspberry Pi 4 + YOLOv8n · Respect de la vie privée par conception
+      </footer>
+    </main>
+  </div>
+
+  <script>
+(function () {
+  var BOOT = {
+    defaultPanelId: "{{ default_panel_id|e }}"
+  };
+
+  var CLASSES = ["car", "truck", "bus", "motorcycle", "person"];
+  var CLASS_LABELS = {
+    car: "voiture",
+    truck: "camion",
+    bus: "bus",
+    motorcycle: "moto",
+    person: "personne"
+  };
+
+  var state = {
+    panelId: BOOT.defaultPanelId,
+    ingestLimit: 10,
+    readingsRaw: [],
+    readingsByPanel: {},
+    panelsMeta: [],
+    alertsRaw: [],
+    alerts24hCount: 0
+  };
+
+  function readingsListForPanel(pid) {
+    var by = state.readingsByPanel;
+    if (by && by[pid] && by[pid].length) return by[pid];
+    return (state.readingsRaw || []).filter(function (r) {
+      var row = parseRow(r);
+      return row && row.panel_id === pid;
+    });
+  }
+
+  function videoPathForPanel(pid) {
+    for (var i = 0; i < state.panelsMeta.length; i++) {
+      var p = state.panelsMeta[i];
+      if (p.panel_id === pid && p.video_path) return p.video_path;
+    }
+    return "data/panels/" + pid + "/video.mp4";
+  }
+
+  function parseRow(r) {
+    if (!r) return null;
+    if (typeof r === "object" && !Array.isArray(r)) return r;
+    if (Array.isArray(r) && r.length >= 10) {
+      return {
+        id: r[0], received_at: r[1], panel_id: r[2], window_start: r[3], window_end: r[4],
+        car: r[5], truck: r[6], bus: r[7], motorcycle: r[8], person: r[9]
+      };
+    }
+    return null;
+  }
+
+  function parseAlert(a) {
+    if (!a) return null;
+    if (typeof a === "object" && !Array.isArray(a)) {
+      return { id: a.id, received_at: a.received_at, type: a.type || a.alert_type, ssim_score: a.ssim_score, confidence: a.confidence, panel_id: a.panel_id };
+    }
+    if (Array.isArray(a) && a.length >= 6) {
+      return { id: a[0], received_at: a[1], type: a[2], ssim_score: a[3], confidence: a[4], panel_id: a[5] };
+    }
+    if (Array.isArray(a) && a.length >= 5) {
+      return { id: a[0], received_at: a[1], type: a[2], ssim_score: a[3], confidence: a[4], panel_id: "" };
+    }
+    return null;
+  }
+
+  function edgeOnline(pid) {
+    var readings = readingsListForPanel(pid);
+    if (!readings || !readings.length) return false;
+    var top = parseRow(readings[0]);
+    if (!top || !top.received_at) return false;
+    var t = Date.parse(top.received_at);
+    if (isNaN(t)) return false;
+    return (Date.now() - t) < 10 * 60 * 1000;
+  }
+
+  function setEdgePill(on) {
+    var el = document.getElementById("edge-status");
+    if (!el) return;
+    el.className = "status-pill " + (on ? "status-pill--on" : "status-pill--off");
+    el.textContent = on ? "Edge en ligne" : "Edge hors ligne";
+  }
+
+  function classLabel(c) {
+    return CLASS_LABELS[c] || c || "-";
+  }
+
+  function dominantVehicle(r) {
+    if (!r) return "-";
+    var best = null, v = -1;
+    CLASSES.forEach(function (c) {
+      var n = Number(r[c]) || 0;
+      if (n > v) { v = n; best = c; }
+    });
+    if (best == null || v <= 0) return "-";
+    return classLabel(best).charAt(0).toUpperCase() + classLabel(best).slice(1);
+  }
+
+  function peakHoursChip() {
+    return "Heures de pointe : 07–09h, 17–19h";
+  }
+
+  function renderAudienceChips(reading, score) {
+    var host = document.getElementById("audience-chips");
+    if (!host) return;
+    host.innerHTML = "";
+    var dom = document.createElement("span");
+    dom.className = "chip";
+    dom.textContent = "Vehicule dominant : " + dominantVehicle(reading);
+    host.appendChild(dom);
+    var age = document.createElement("span");
+    age.className = "chip";
+    age.textContent = "Age dominant : " + (score && score.age_dominant ? score.age_dominant : "-");
+    host.appendChild(age);
+    var inc = document.createElement("span");
+    inc.className = "chip";
+    inc.textContent = "Revenu : " + (score && score.income_bracket ? score.income_bracket : "-");
+    host.appendChild(inc);
+    var z = document.createElement("span");
+    z.className = "chip";
+    z.textContent = "Zone : " + (score && score.zone_type ? score.zone_type : "-");
+    host.appendChild(z);
+    var ph = document.createElement("span");
+    ph.className = "chip";
+    ph.textContent = peakHoursChip();
+    host.appendChild(ph);
+    if (score && score.cpm_estimate_tnd != null && !isNaN(score.cpm_estimate_tnd)) {
+      var cpm = document.createElement("span");
+      cpm.className = "chip";
+      cpm.textContent = "CPM estime : " + Number(score.cpm_estimate_tnd).toFixed(1) + " TND";
+      host.appendChild(cpm);
+    }
+  }
+
+  function latestForPanel(readings, pid) {
+    var list = readingsListForPanel(pid);
+    for (var i = 0; i < list.length; i++) {
+      var row = parseRow(list[i]);
+      if (row && row.panel_id === pid) return row;
+    }
+    return list.length ? parseRow(list[0]) : null;
+  }
+
+  function renderMix(reading) {
+    var host = document.getElementById("mix-content");
+    if (!host) return;
+    if (!reading) {
+      host.innerHTML = '<div class="empty">En attente de la premiere lecture de l\'appareil edge - lancez le job edge ou envoyez une charge utile a <span class="mono">/ingest/vehicle-mix</span>.</div>';
+      return;
+    }
+    var max = 1;
+    CLASSES.forEach(function (c) { max = Math.max(max, Number(reading[c]) || 0); });
+    var html = '<div class="bars">';
+    CLASSES.forEach(function (c) {
+      var n = Number(reading[c]) || 0;
+      var pct = Math.round((100 * n) / max);
+      html += '<div class="bar-row"><div class="bar-row__name">' + classLabel(c) + '</div><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div><div class="bar-count">' + n + '</div></div>';
+    });
+    html += "</div>";
+    html += '<p class="meta-line"><strong>Fenetre</strong> &middot; debut <span class="mono">' + esc(reading.window_start || "-") + '</span> &middot; fin <span class="mono">' + esc(reading.window_end || "-") + "</span></p>";
+    host.innerHTML = html;
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function updateAttentionMetrics(score) {
+    var ai = document.getElementById("att-imp");
+    var ar = document.getElementById("att-rate");
+    if (!score || score.error) {
+      if (ai) ai.textContent = "-";
+      if (ar) ar.textContent = "-";
+      return;
+    }
+    if (ai) ai.textContent = score.attentive_impressions != null ? score.attentive_impressions : "-";
+    if (ar) {
+      if (score.attention_rate != null && !isNaN(score.attention_rate)) {
+        ar.textContent = (Number(score.attention_rate) * 100).toFixed(1) + "%";
+      } else {
+        ar.textContent = "-";
+      }
+    }
+  }
+
+  function renderScore(score) {
+    var empty = document.getElementById("score-empty");
+    var badgeCtx = document.getElementById("score-context-badge");
+    var badgeWx = document.getElementById("score-weather-badge");
+    var hint = document.getElementById("score-baseline-hint");
+    if (score && !score.error) {
+      if (empty) empty.style.display = "none";
+      var imp = score.estimated_impressions;
+      document.getElementById("score-impressions").textContent = imp != null ? imp : "-";
+      document.getElementById("kpi-impressions").textContent = imp != null ? imp : "-";
+      var wtxt = (score.window_start || "-") + " -> " + (score.window_end || "-");
+      if (score.data_available === false) {
+        wtxt = "Reference de zone (pas encore de fenetre edge)";
+      }
+      document.getElementById("score-window").textContent = wtxt;
+      var sesV = Number(score.ses_score);
+      if (!isNaN(sesV)) {
+        document.getElementById("score-ses-val").textContent = sesV.toFixed(2);
+        var fill = document.getElementById("score-ses-fill");
+        if (fill) fill.style.width = Math.min(100, Math.max(0, (sesV / 10) * 100)) + "%";
+      } else {
+        document.getElementById("score-ses-val").textContent = "-";
+      }
+      var cm = Number(score.context_multiplier);
+      if (badgeCtx) {
+        badgeCtx.style.display = "inline-flex";
+        var cl = score.context_label || "Contexte";
+        badgeCtx.textContent = !isNaN(cm) ? cl + " ×" + cm.toFixed(2) : cl;
+      }
+      var wm = Number(score.weather_multiplier);
+      if (badgeWx) {
+        badgeWx.style.display = "inline-flex";
+        var wl = score.weather_label || "Meteo";
+        badgeWx.textContent = !isNaN(wm) ? wl + " ×" + wm.toFixed(2) : wl;
+      }
+      if (hint) {
+        if (score.data_available === false) {
+          hint.style.display = "block";
+          hint.textContent = "Estimation de reference - aucune donnee edge";
+        } else {
+          hint.style.display = "none";
+        }
+      }
+      updateAttentionMetrics(score);
+    } else {
+      document.getElementById("score-impressions").textContent = "-";
+      var kpiImp = document.getElementById("kpi-impressions");
+      if (kpiImp) kpiImp.textContent = "-";
+      if (empty) empty.style.display = "block";
+      if (badgeCtx) badgeCtx.style.display = "none";
+      if (badgeWx) badgeWx.style.display = "none";
+      if (hint) hint.style.display = "none";
+      document.getElementById("score-window").textContent = "";
+      document.getElementById("score-ses-val").textContent = "-";
+      var fill2 = document.getElementById("score-ses-fill");
+      if (fill2) fill2.style.width = "0%";
+      updateAttentionMetrics(null);
+    }
+  }
+
+  async function refreshScore() {
+    var pid = state.panelId;
+    try {
+      var res = await fetch("/panels/" + encodeURIComponent(pid) + "/score");
+      var data = await res.json();
+      renderScore(data);
+      var read = latestForPanel(state.readingsRaw, pid);
+      renderAudienceChips(read, data);
+    } catch (e) {
+      renderScore({ error: true });
+      var read2 = latestForPanel(state.readingsRaw, pid);
+      renderAudienceChips(read2, null);
+    }
+  }
+
+  function renderIngest() {
+    var host = document.getElementById("ingest-list");
+    var btn = document.getElementById("btn-load-more");
+    if (!host) return;
+    var rows = readingsListForPanel(state.panelId).map(parseRow).filter(Boolean);
+    if (!rows.length) {
+      host.innerHTML = '<div class="empty">Aucune ligne d\'ingestion pour ce panneau — lancez le job edge avec <span class="mono">--panel ' + esc(state.panelId) + '</span> ou envoyez une charge utile a <span class="mono">/ingest/vehicle-mix</span>.</div>';
+      if (btn) btn.style.display = "none";
+      return;
+    }
+    var n = Math.min(state.ingestLimit, rows.length);
+    var html = "";
+    for (var i = 0; i < n; i++) {
+      var r = rows[i];
+      var max = 1;
+      CLASSES.forEach(function (c) { max = Math.max(max, Number(r[c]) || 0); });
+      var mini = '<div class="bars ingest-card__mini" style="gap:4px">';
+      CLASSES.forEach(function (c) {
+        var v = Number(r[c]) || 0;
+        mini += '<div class="bar-row" style="grid-template-columns:1fr"><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(100 * v / max) + '%"></div></div></div>';
+      });
+      mini += "</div>";
+      var tot = CLASSES.reduce(function (s, c) { return s + (Number(r[c]) || 0); }, 0);
+html += '<article class="ingest-card"><div class="ingest-card__time">' + esc(r.window_start || "-") + " \u00b7 " + esc(r.window_end || "-") + '</div>' + mini + '<div class="meta-line"><strong>Total:</strong> ' + tot + ' \u00b7 panel <span class="mono">' + esc(r.panel_id || "") + '</span></div></article>';    }
+    host.innerHTML = html;
+    if (btn) btn.style.display = rows.length > state.ingestLimit ? "inline-block" : "none";
+  }
+
+  function alertSeverityMessage(ssim) {
+    if (ssim == null || isNaN(ssim)) return "Impossible de classer la severite.";
+    if (ssim < 0.3) return "Panneau probablement couvert ou detruit";
+    if (ssim < 0.5) return "Obstruction importante ou dommage detecte";
+    if (ssim < 0.65) return "Obstruction partielle ou deplacement de camera";
+    return "Deviation mineure par rapport a la reference";
+  }
+
+  function renderAlerts() {
+    var host = document.getElementById("alerts-out");
+    if (!host) return;
+    var list = state.alertsRaw.map(parseAlert).filter(Boolean);
+    if (!list.length) {
+      host.innerHTML = '<span class="pill-ok">Aucun probleme d\'integrite pour ce panneau (50 derniers enregistrements)</span>';
+      return;
+    }
+    var html = "";
+    list.forEach(function (a) {
+      var s = a.ssim_score;
+      var pid = a.panel_id || "-";
+      html += '<article class="alert-card" style="margin-bottom:.5rem"><div class="alert-card__icon">ALERTE</div><div><div style="font-weight:800">' + esc(a.type || "alerte") + '</div>';
+      html += '<div class="meta-line">Panneau <span class="mono">' + esc(pid) + "</span></div>";
+      html += '<div class="meta-line"><span class="ssim-num ssim--bad">SSIM ' + (s != null ? Number(s).toFixed(4) : "-") + "</span> · confiance " + (a.confidence != null ? Number(a.confidence).toFixed(4) : "-") + "</div>";
+      html += '<div class="meta-line">' + esc(a.received_at || "") + "</div>";
+      html += '<div class="meta-line" style="font-size:.75rem;margin-top:.35rem">' + esc(alertSeverityMessage(s)) + "</div></div></article>";
+    });
+    host.innerHTML = html;
+  }
+
+  function confClass(cf) {
+    if (cf >= 0.8) return "conf-pill conf-pill--hi";
+    if (cf >= 0.6) return "conf-pill conf-pill--mid";
+    return "conf-pill conf-pill--lo";
+  }
+
+  function firstPerTrack(samples) {
+    var seen = {};
+    var out = [];
+    (samples || []).forEach(function (s) {
+      var id = s.track_id;
+      if (id == null) return;
+      if (seen[id]) return;
+      seen[id] = true;
+      out.push(s);
+    });
+    return out;
+  }
+
+  function renderVerify(data) {
+    var host = document.getElementById("verify-out");
+    if (!host) return;
+    if (!data.ok) {
+      host.innerHTML = '<div class="empty" style="border-color:#fecaca;background:#fef2f2;color:#b91c1c">' + esc(data.error || "Verification echouee") + "</div>";
+      return;
+    }
+    var v = data.video || {};
+    var tiles = '<div class="tile-row">' +
+      '<div class="tile"><div class="tile__v">' + esc(v.width) + '</div><div class="tile__l">Largeur px</div></div>' +
+      '<div class="tile"><div class="tile__v">' + esc(v.height) + '</div><div class="tile__l">Hauteur px</div></div>' +
+      '<div class="tile"><div class="tile__v">' + esc(v.fps_rounded != null ? v.fps_rounded : "-") + '</div><div class="tile__l">FPS</div></div>' +
+      '<div class="tile"><div class="tile__v">' + esc(v.reported_total_frames != null ? v.reported_total_frames : "-") + '</div><div class="tile__l">Images</div></div></div>';
+
+    var run = data.run || {};
+    var meta = '<p class="meta-line">Images echantillonnees : <strong>' + data.frames_sampled + "</strong> · pas <strong>" + run.stride + "</strong> · max <strong>" + run.max_frames + "</strong> · poids <span class=\"mono\">" + esc(data.model_weights) + "</span> · conf >= <strong>" + esc(data.conf_threshold) + "</strong></p>";
+
+    var by = data.by_class || {};
+    var max = 1;
+    CLASSES.forEach(function (c) { max = Math.max(max, Number(by[c]) || 0); });
+    var bars = '<div class="bars" style="margin-top:.5rem">';
+    CLASSES.forEach(function (c) {
+      var n = Number(by[c]) || 0;
+      bars += '<div class="bar-row"><div class="bar-row__name">' + classLabel(c) + '</div><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(100 * n / max) + '%"></div></div><div class="bar-count">' + n + "</div></div>";
+    });
+    bars += "</div>";
+
+    var uniq = firstPerTrack(data.sample_detections || []);
+    var cards = '<div class="track-cards">';
+    uniq.forEach(function (s) {
+      var cf = Number(s.confidence);
+      var pill = '<span class="' + confClass(cf) + '">' + (isNaN(cf) ? "-" : cf.toFixed(2)) + "</span>";
+      var face = (s.class === "person") ? '<span class="face-badge">Visage floute</span>' : "";
+      cards += '<div class="tcard"><div class="tcard__id">#' + esc(s.track_id) + '</div><div class="tcard__cls">' + esc(classLabel(s.class)) + "</div>" + pill + face + '<div class="tcard__bbox">' + esc(JSON.stringify(s.bbox_xyxy)) + "</div></div>";
+    });
+    cards += "</div>";
+
+    host.innerHTML = '<div class="banner-ok">Execution du modele reussie - detections produites.</div>' + tiles + meta + '<p class="section__sub" style="margin:.75rem 0 .25rem;font-size:.75rem;">Comptages par classe (images echantillonnees)</p>' + bars + '<p class="section__sub" style="margin:1rem 0 .25rem;font-size:.75rem;">Premier passage par ID de suivi</p>' + cards;
+  }
+
+  async function populatePanels() {
+    var sel = document.getElementById("panel-select");
+    if (!sel) return;
+    try {
+      var res = await fetch("/panels");
+      var list = await res.json();
+      state.panelsMeta = list || [];
+      var k = document.getElementById("kpi-panels");
+      if (k) k.textContent = String(state.panelsMeta.length || "0");
+      sel.innerHTML = "";
+      (list || []).forEach(function (p) {
+        var opt = document.createElement("option");
+        opt.value = p.panel_id;
+        var warn = "";
+        opt.textContent = warn + p.panel_id + " · " + (p.zone_type || "—");
+        sel.appendChild(opt);
+      });
+      if (!sel.options.length) {
+        var o = document.createElement("option");
+        o.value = BOOT.defaultPanelId;
+        o.textContent = BOOT.defaultPanelId;
+        sel.appendChild(o);
+      }
+      var wanted = BOOT.defaultPanelId;
+      var found = false;
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === wanted) { found = true; break; }
+      }
+      sel.value = found ? wanted : sel.options[0].value;
+      state.panelId = sel.value;
+      var tab = document.getElementById("tab-score");
+      if (tab) tab.href = "/panels/" + encodeURIComponent(state.panelId) + "/score";
+      var vt = document.getElementById("video-path-text");
+      if (vt) vt.textContent = videoPathForPanel(state.panelId);
+    } catch (e) {
+      sel.innerHTML = "";
+      var o2 = document.createElement("option");
+      o2.value = BOOT.defaultPanelId;
+      o2.textContent = BOOT.defaultPanelId;
+      sel.appendChild(o2);
+      state.panelId = BOOT.defaultPanelId;
+    }
+  }
+
+  async function pullData() {
+    try {
+      var res = await fetch("/data?panel_id=" + encodeURIComponent(state.panelId));
+      var j = await res.json();
+      state.readingsByPanel = j.readings_by_panel || {};
+      state.readingsRaw = j.readings || [];
+      state.alertsRaw = j.alerts || [];
+      state.alerts24hCount = j.alerts_24h_count != null ? j.alerts_24h_count : 0;
+      var ka = document.getElementById("kpi-alerts");
+      if (ka) ka.textContent = String(state.alerts24hCount);
+      setEdgePill(edgeOnline(state.panelId));
+      renderMix(latestForPanel(state.readingsRaw, state.panelId));
+      renderIngest();
+      renderAlerts();
+      await refreshScore();
+    } catch (e) {
+      setEdgePill(false);
+    }
+  }
+
+  document.getElementById("btn-refresh-score").addEventListener("click", refreshScore);
+  document.getElementById("panel-select").addEventListener("change", function () {
+    state.panelId = this.value;
+    document.getElementById("tab-score").href = "/panels/" + encodeURIComponent(state.panelId) + "/score";
+    var vt = document.getElementById("video-path-text");
+    if (vt) vt.textContent = videoPathForPanel(state.panelId);
+    pullData();
+  });
+  document.getElementById("btn-load-more").addEventListener("click", function () {
+    state.ingestLimit += 10;
+    renderIngest();
+  });
+  document.getElementById("btn-verify").addEventListener("click", async function () {
+    var b = document.getElementById("btn-verify");
+    b.disabled = true;
+    document.getElementById("verify-out").innerHTML = '<p class="meta-line">Exécution YOLO + ByteTrack…</p>';
+    try {
+      var res = await fetch("/api/verify-video?panel_id=" + encodeURIComponent(state.panelId));
+      renderVerify(await res.json());
+    } catch (e) {
+      document.getElementById("verify-out").innerHTML = '<div class="empty">Echec de la requete.</div>';
+    }
+    b.disabled = false;
+  });
+
+  document.addEventListener("DOMContentLoaded", async function () {
+    await populatePanels();
+    await pullData();
+    setInterval(pullData, 30000);
+  });
+})();
+  </script>
+</body>
+</html>
